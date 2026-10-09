@@ -1,0 +1,9 @@
+{
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://morrow-ilnn.onrender.com/api/:path*"
+    }
+  ]
+}

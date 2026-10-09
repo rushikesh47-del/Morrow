@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
+      host: 'localhost',
       proxy: {
         '/api': `http://127.0.0.1:${API_PORT}`,
       },

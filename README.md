@@ -29,14 +29,15 @@ Allow the Render service to connect in MongoDB Atlas **Network Access**. Keep `M
 
 Create an account, then use **Send a conversation request** and enter the email address of another registered Morrow user. The recipient can review it in the requests inbox and accept or decline. A conversation is created only after the recipient accepts; then both users can message each other. Sent requests remain pending until the recipient responds. Open clients refresh conversations and request inboxes every four seconds. Members appear online while their signed-in app sends presence heartbeats; they appear offline after signing out or when heartbeats stop for 30 seconds. The other person must have a Morrow account before you can send a request.
 
-## Deploying to Vercel
+## Deploying the frontend to Vercel
 
-The Vite app in `frontend/` builds as a static site, and the root `api/[...path].js` adapter exposes the Express API from `backend/` as a Vercel function.
+The React/Vite frontend is deployed to Vercel, while the Express API runs on Render. `vercel.json` configures Vercel to publish `frontend/dist` and proxy `/api/*` requests to the Render service. This keeps browser API calls and session cookies on the frontend's origin.
 
-1. Push this project to a GitHub repository.
-2. In Vercel, import the repository and set **Root Directory** to the folder containing this `package.json`.
-3. Use the Vite framework preset, with build command `npm run build` and output directory `dist`.
-4. Add `MONGODB_URI` and a private `JWT_SECRET` (at least 32 characters) under **Project → Settings → Environment Variables**. Configure Atlas Network Access to allow your deployed API to connect, then redeploy after changing environment variables.
-5. Test registration, login, and messaging on the deployed URL.
+1. Push the whole project to GitHub and import the repository in Vercel. Set **Root Directory** to the project root (the folder containing this `package.json`).
+2. Use `npm run build` as the build command. The output directory is already configured as `frontend/dist` in `vercel.json`.
+3. The API rewrite currently targets `https://morrow-ilnn.onrender.com`. If your Render service URL differs, update the destination in `vercel.json`.
+4. On Render, set `FRONTEND_URL` to the exact deployed Vercel origin (for example, `https://your-app.vercel.app`) and redeploy the backend.
+5. Keep `MONGODB_URI` and `JWT_SECRET` configured only on Render. Configure MongoDB Atlas Network Access to allow the Render service to connect.
+6. Redeploy the Vercel frontend, then test registration, login, and messaging on its public URL.
 
 Existing Firebase accounts and chat data are not migrated automatically. Users must create new accounts in the Atlas-backed app. To run locally in production mode, build with `npm run build`, set `NODE_ENV=production`, configure `MONGODB_URI` and `JWT_SECRET`, and run `npm start`.
